@@ -1,0 +1,8 @@
+layout {
+    pane split_direction="vertical" {
+	    pane name="agent" size="50%"
+	    pane name="database" size="50%"
+    }
+}
+
+
