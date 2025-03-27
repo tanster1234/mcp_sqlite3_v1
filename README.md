@@ -1,7 +1,7 @@
 # Introduction to MCP with SQL Agent
 
 > Build an AI SQL agent using MCP to interact with a SQLite database through
-> natural language.
+> natural language, streamlit integration for an easy web application with a data visualization agent
 
 ## Key Features
 
