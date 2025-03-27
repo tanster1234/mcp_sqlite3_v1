@@ -3,8 +3,6 @@
 > Build an AI SQL agent using MCP to interact with a SQLite database through
 > natural language.
 
-📺 [Watch the Tutorial](https://youtu.be/cxl3tPWLOQ8)
-
 ## Key Features
 
 - Create an AI SQL agent using MCP.
