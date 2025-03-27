@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SQL Chat Agent</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    #chat { max-width: 600px; margin-bottom: 2rem; }
+    .bubble { padding: 0.5rem 1rem; border-radius: 10px; margin: 0.5rem 0; }
+    .user { background: #e0f7fa; text-align: right; }
+    .bot { background: #f1f1f1; text-align: left; }
+  </style>
+</head>
+<body>
+  <h2>💬 SQL Chat Agent</h2>
+  <div id="chat"></div>
+  <input id="input" placeholder="Ask a question..." style="width: 80%;" />
+  <button onclick="send()">Send</button>
+
+  <script>
+    async function send() {
+      const input = document.getElementById("input");
+      const text = input.value;
+      input.value = "";
+      appendMessage("user", text);
+
+      const res = await fetch("http://localhost:8000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      });
+
+      const data = await res.json();
+      console.log("Claude:", data.response);
+      appendMessage("bot", data.response);
+    }
+
+    function appendMessage(role, text) {
+      const chat = document.getElementById("chat");
+      const msg = document.createElement("div");
+      msg.className = "bubble " + role;
+      msg.innerText = text;
+      chat.appendChild(msg);
+    }
+  </script>
+</body>
+</html>

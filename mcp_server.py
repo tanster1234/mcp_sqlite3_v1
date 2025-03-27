@@ -1,34 +1,38 @@
-# server.py
+import sys
 import sqlite3
-
 from loguru import logger
 from mcp.server.fastmcp import FastMCP
 
-# Create an MCP server
-mcp = FastMCP("Demo")
+# Redirect all logs to stderr so stdout is reserved for MCP protocol
+logger.remove()
+logger.add(sys.stderr)
 
+# Optional: log a startup message (stderr is safe)
+print("Starting MCP server...", file=sys.stderr)
+
+# Create an MCP server instance
+mcp = FastMCP("SQLite SQL Assistant")
 
 @mcp.tool()
 def query_data(sql: str) -> str:
-    """Execute SQL queries safely"""
-    logger.info(f"Executing SQL query: {sql}")
-    conn = sqlite3.connect("./database.db")
+    """Executes raw SQL on the local SQLite database"""
     try:
-        result = conn.execute(sql).fetchall()
+        conn = sqlite3.connect("database.db")
+        cursor = conn.cursor()
+        cursor.execute(sql)
+
+        rows = cursor.fetchall()
         conn.commit()
-        return "\n".join(str(row) for row in result)
+
+        # Return query result or a success message
+        return "\n".join(str(row) for row in rows) if rows else "✅ Query ran successfully."
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"❌ SQL Error: {e}"
     finally:
         conn.close()
 
+# You can add more tools here, like schema_introspection(), get_table_names(), etc.
 
-@mcp.prompt()
-def example_prompt(code: str) -> str:
-    return f"Please review this code:\n\n{code}"
-
-
+# Start the server
 if __name__ == "__main__":
-    print("Starting server...")
-    # Initialize and run the server
     mcp.run(transport="stdio")
